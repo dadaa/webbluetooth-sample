@@ -19,15 +19,22 @@ async function start() {
 
   $("#value").addEventListener("touchmove", ({ target, targetTouches }) => {
     const touch = targetTouches[0];
-    const { clientWidth } = target;
-    const { clientX } = touch;
-
-    const value = parseInt(255 * (clientX / clientWidth));
-    const encoder = new TextEncoder();
-    const bleValue = encoder.encode(value);
-    characteristic.writeValue(bleValue);
-    target.textContent = value;
+    send(characteristic, target, touch);
   });
+  $("#value").addEventListener("mousemove", e => {
+    send(characteristic, e.target, e);
+  });
+}
+
+function send(characteristic, target, event) {
+  const { clientWidth } = target;
+  const { clientX } = event;
+
+  const value = parseInt(255 * (clientX / clientWidth));
+  const encoder = new TextEncoder();
+  const bleValue = encoder.encode(value);
+  characteristic.writeValue(bleValue);
+  target.textContent = value;
 }
 
 function $(selector) {
